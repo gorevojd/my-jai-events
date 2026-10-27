@@ -56,6 +56,7 @@ Event :: struct (Types: ..Type) {
     next_id: u64 = 1;
     dispatch_depth: int;
     dispatch_limit: int;
+    needs_compaction: bool;
 }
 
 subscribe :: (event: *$E/Event, callback: E.Callback) -> Subscription {
@@ -74,6 +75,7 @@ unsubscribe :: (event: *$E/Event, subscription: Subscription) -> bool {
     for *entry: event.callbacks {
         if entry.id == subscription.id && entry.callback != null {
             entry.callback = null;
+            event.needs_compaction = true;
             if event.dispatch_depth == 0 {
                 compact(event);
             }
@@ -105,6 +107,10 @@ clear :: (event: *$E/Event) {
     }
     if event.dispatch_depth == 0 {
         event.callbacks.count = 0;
+        event.needs_compaction = false;
+    }
+    else {
+        event.needs_compaction = true;
     }
 }
 
@@ -113,6 +119,7 @@ destroy :: (event: *$E/Event) {
     assert(event.dispatch_depth == 0, "Cannot destroy an event during broadcast.");
     array_reset(*event.callbacks);
     event.dispatch_limit = 0;
+    event.needs_compaction = false;
 }
 
 #scope_file
@@ -121,7 +128,7 @@ destroy :: (event: *$E/Event) {
 
 finish_broadcast :: (event: *$E/Event) {
     event.dispatch_depth -= 1;
-    if event.dispatch_depth == 0 {
+    if event.dispatch_depth == 0 && event.needs_compaction {
         compact(event);
     }
 }
@@ -135,4 +142,5 @@ compact :: (event: *$E/Event) {
         }
     }
     event.callbacks.count = count;
+    event.needs_compaction = false;
 }

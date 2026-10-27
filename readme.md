@@ -40,6 +40,8 @@ foreign handle. `clear` removes every subscription while retaining allocated sto
 Callbacks may subscribe, unsubscribe, clear, or broadcast the same event recursively.
 Unsubscription and clearing take effect immediately; listeners added during dispatch first
 run on the next outermost broadcast. Nested broadcasts use the outermost listener boundary.
+The outermost broadcast compacts callback storage only after removal or clearing; an
+unchanged subscription list needs no second traversal after dispatch.
 
 Events are single-threaded. Keep an event at a stable address, do not copy it after use, and
 only destroy it outside its callbacks. A subscription handle belongs to that event instance.
