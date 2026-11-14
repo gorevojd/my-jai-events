@@ -10,6 +10,10 @@ Jai standard library: `Basic`.
 
 Add the directory containing `my-jai-events` to the compiler's module search path.
 
+When bundled in my-jai-core, this directory is `Src/Modules/my-jai-core` in PacCodex.
+Initialize the bundled submodules with `git submodule update --init --recursive`.
+The event module itself still requires no other modules.
+
 ## Usage
 
 ```jai
