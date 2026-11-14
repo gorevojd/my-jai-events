@@ -1,9 +1,19 @@
-# MyEvents
+# my-jai-events
 
-Synchronous, typed events with no game or platform dependencies:
+Synchronous, typed events with no game or platform dependencies.
+
+## Dependencies
+
+No other `my-jai-*` modules are required.
+
+Jai standard library: `Basic`.
+
+Add the directory containing `my-jai-events` to the compiler's module search path.
+
+## Usage
 
 ```jai
-Events :: #import "MyEvents";
+Events :: #import "my-jai-events";
 
 ConfigEventType :: enum {
     Loaded;
