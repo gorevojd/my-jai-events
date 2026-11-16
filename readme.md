@@ -10,7 +10,9 @@ Jai standard library: `Basic`.
 
 Add the directory containing `my-jai-events` to the compiler's module search path.
 
-When bundled in my-jai-core, this directory is `Src/Modules/my-jai-core` in PacCodex.
+For example, a standalone checkout at `modules/my-jai-events` needs `modules` on
+the search path. A bundled checkout at `modules/my-jai-core/my-jai-events` needs
+`modules/my-jai-core` instead.
 Initialize the bundled submodules with `git submodule update --init --recursive`.
 The event module itself still requires no other modules.
 
@@ -62,4 +64,7 @@ only destroy it outside its callbacks. A subscription handle belongs to that eve
 Callback lifetimes and external state belong to the caller; include a state pointer in the
 event argument types when a callback needs explicit context.
 
-Local checks: compile `Tests/build_event_checks.jai` with Jai, then run `Build/event_checks.exe`.
+To check delivery, increment a counter in `on_change`, broadcast once, and assert
+that the counter is one. After unsubscribing, broadcast again and assert that the
+counter is unchanged. The complete program above supplies the event, callback and
+subscription lifecycle needed for this check.
